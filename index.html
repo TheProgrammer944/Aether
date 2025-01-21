@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon Footprint Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+        button:hover {
+            background-color: #e67e22;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: 600;
+            font-size: 1.2em;
+        }
+        .result.success {
+            color: #27ae60;
+        }
+        .result.warning {
+            color: #f39c12;
+        }
+        .result.danger {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌿 Carbon Footprint Calculator 🌍</h1>
+    <div class="container">
+        <label for="distance">Travel Distance (in kilometers):</label>
+        <input type="number" id="distance" placeholder="Enter distance" />
+
+        <label for="travelMode">Mode of Transportation:</label>
+        <select id="travelMode">
+            <option value="car">Car</option>
+            <option value="train">Train</option>
+            <option value="plane">Plane</option>
+            <option value="bus">Bus</option>
+        </select>
+
+        <button onclick="calculateCO2()">Calculate CO2 Emissions</button>
+
+        <div class="result" id="result"></div>
+        <div class="result" id="tips"></div>
+    </div>
+
+    <script>
+        function calculateCO2() {
+            const co2PerKm = {
+                car: 0.192,
+                train: 0.033,
+                plane: 0.150,
+                bus: 0.090
+            };
+
+            const distance = parseFloat(document.getElementById('distance').value);
+            const travelMode = document.getElementById('travelMode').value;
+            const resultDiv = document.getElementById('result');
+            const tipsDiv = document.getElementById('tips');
+
+            if (isNaN(distance) || distance <= 0) {
+                resultDiv.textContent = "🚫 Please enter a valid positive distance.";
+                resultDiv.className = "result danger";
+                tipsDiv.textContent = "";
+                return;
+            }
+
+            if (!co2PerKm[travelMode]) {
+                resultDiv.textContent = "🚫 Invalid travel mode selected.";
+                resultDiv.className = "result danger";
+                tipsDiv.textContent = "";
+                return;
+            }
+
+            const co2Emissions = distance * co2PerKm[travelMode];
+            resultDiv.textContent = `Your estimated CO2 emissions: ${co2Emissions.toFixed(2)} kg`;
+            resultDiv.className = "result success";
+
+            let tips;
+            if (co2Emissions <= 15) {
+                tips = "🎉 Excellent! Your carbon footprint is low. Consider offsetting your emissions to be carbon neutral.";
+                tipsDiv.className = "result success";
+            } else if (co2Emissions <= 50) {
+                tips = "🚴 Your carbon footprint is moderate. Consider carpooling or using public transport more often.";
+                tipsDiv.className = "result warning";
+            } else if (co2Emissions <= 100) {
+                tips = "🌱 Your carbon footprint is significant. Explore options like cycling or walking for short distances.";
+                tipsDiv.className = "result warning";
+            } else if (co2Emissions <= 150) {
+                tips = "⚠️ Your carbon footprint is high. Consider offsetting your emissions and exploring alternatives.";
+                tipsDiv.className = "result danger";
+            } else {
+                tips = "🚨 Your carbon footprint is very high. Explore sustainable modes of transport.";
+                tipsDiv.className = "result danger";
+            }
+
+            tipsDiv.textContent = tips;
+        }
+    </script>
+</body>
+</html>
